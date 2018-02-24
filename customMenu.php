@@ -4,8 +4,8 @@
   
   class  Wechat   
   {      
-      public $APPID="wx46ed101d014f2018";      
-      public $APPSECRET="4107c079d12cfaaa57b64069408f353e";  
+      public $APPID="wx46exxxxx2018";      
+      public $APPSECRET="4107c0xxxxxxxxxxxxx8f353e";  
 
 
       public function __construct()
