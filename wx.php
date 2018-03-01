@@ -16,15 +16,19 @@
 	        //news
 	        'news' => '<xml><ToUserName><![CDATA[%s]]></ToUserName><FromUserName><![CDATA[%s]]></FromUserName><CreateTime>%s</CreateTime><MsgType><![CDATA[news]]></MsgType><ArticleCount>%s</ArticleCount><Articles>%s</Articles></xml>',
 	        //news_item
-	        'news_item' => '<item><Title><![CDATA[%s]]></Title><Description><![CDATA[%s]]></Description><PicUrl><![CDATA[%s]]></PicUrl><Url><![CDATA[%s]]></Url></item>'
+	        'news_item' => '<item><Title><![CDATA[%s]]></Title><Description><![CDATA[%s]]></Description><PicUrl><![CDATA[%s]]></PicUrl><Url><![CDATA[%s]]></Url></item>',
+	        'geography' => '<xml><ToUserName><![CDATA[%s]]></ToUserName><FromUserName><![CDATA[%s]]></FromUserName><CreateTime>%s</CreateTime><MsgType><![CDATA[location]]></MsgType><Location_X>%s</Location_X><Location_Y>%s</Location_Y><Scale>%s</Scale><Label><![CDATA[红提子信息]]></Label><MsgId>1234567890123456</MsgId></xml>',
+	        'geography_2' => '<xml><ToUserName><![CDATA[%s]]></ToUserName><FromUserName><![CDATA[%s]]></FromUserName><CreateTime>%s</CreateTime><MsgType><![CDATA[event]]></MsgType><Event><![CDATA[LOCATION]]></Event><Latitude>%s</Latitude><Longitude>%s</Longitude><Precision>30.000000</Precision></xml>'
         );  
 
+	    // construct
 		public function __construct()
 		{
 			$this->init();
 			$this->getWxMessages();
 		}
 
+		// token setting
 		private function init()
 		{
 			//1. 
@@ -75,6 +79,60 @@
 		}
 		
 
+		// Reply text
+		private function _msgText($xml)
+		{
+			
+            $toUser = $xml->FromUserName;
+			$fromUser = $xml->ToUserName;
+			$createTime = time();
+			$content = '您好，欢迎来到mo vi的公众号!';
+
+            $infoText = sprintf($this->_msg_template['text'],$toUser,$fromUser,$createTime,$content);
+            
+            die($infoText);
+
+		}	
+
+		// Reply image
+		private function _msgImg($xml)
+		{
+			
+            $toUser = $xml->FromUserName;
+			$fromUser = $xml->ToUserName;
+			$createTime = time();
+			$MediaId = 'rBAsdc59TPxTyb7iwnjWEE1XdfVbMFDUOpMNgK0cV8F8WawHyME10fIarfC5TD7h';
+
+            $infoText = sprintf($this->_msg_template['image'],$toUser,$fromUser,$createTime,$MediaId);
+            
+            die($infoText);
+		}
+
+		// Reply news
+		private function _msgNews($xml)
+		{
+			
+            $toUser = $xml->FromUserName;
+			$fromUser = $xml->ToUserName;
+			$createTime = time();
+			$item_str = '';
+			$newsList = array(
+				array('title'=>'漂亮的小碧雅','desc'=>'碧雅是一个森林系小仙女','picurl'=>'http://pic1.win4000.com/wallpaper/2017-12-19/5a387cdbbdfe0.jpg','url'=>'blog.sina.com.cn/riversfrog'),
+				array('title'=>'胖胖的帅阿达','desc'=>'阿达是一个重量级小胖子','picurl'=>'http://pic1.win4000.com/wallpaper/2017-12-19/5a387cfd18684.jpg','url'=>'blog.sina.com.cn/riversfrog'),
+				array('title'=>'黑黑的小阿俊','desc'=>'阿达是一个重量级小胖子','picurl'=>'http://pic1.win4000.com/wallpaper/2017-12-19/5a387cc3af0c0.jpg','url'=>'blog.sina.com.cn/riversfrog')
+			);
+
+			foreach ($newsList as $item) {
+				$item_str .= sprintf($this->_msg_template['news_item'],$item['title'],$item['desc'],$item['picurl'],$item['url']);
+			}
+
+            $infoText = sprintf($this->_msg_template['news'],$toUser,$fromUser,$createTime,count($newsList),$item_str);
+            
+            die($infoText);
+
+		}		
+
+		// Reply music
 		private function _msgMusic($xml)
 		{
 			$music_url='http://fs.w.kugou.com/201803011802/c5b339fdc14f1d5bd2c5b49f2e51262d/G123/M04/08/03/uw0DAFpobHGAdIU2ADtVt1s3A-8379.mp3';
@@ -93,6 +151,23 @@
 
 		}
 
+		// Reply geography
+		private function _msgGeography($xml)
+		{
+			$toUser = $xml->FromUserName;
+			$fromUser = $xml->ToUserName;
+			$createTime = time();
+			$px = '114.072333';
+			$py = '22.614635';
+			//$pscale = '20';
+
+            $infoText = sprintf($this->_msg_template['geography_2'],$toUser,$fromUser,$createTime,$px,$py);
+            file_put_contents('2.xml',$infoText);
+            die($infoText);
+		}
+
+
+		// Accept message
 		public function getWxMessages()
 	    {  
 
@@ -103,14 +178,15 @@
 		    {
 		    	file_put_contents('./info.xml',  $xml_str);
 		    	$sxe_2 =  simplexml_load_string($xml_str,'SimpleXMLElement', LIBXML_NOCDATA);
-		    	$this->_msgMusic($sxe_2);
+		    	//$this->_msgMusic($sxe_2);
+		    	//$this->_msgImg($sxe_2);
+		    	//$this->_msgText($sxe_2);
+		    	//$this->_msgNews($sxe_2);
+		    	$this->_msgGeography($sxe_2);
 		    }
 		}      
 	}
 
 
 	new WeChat();
-
-	
-	
 ?>
