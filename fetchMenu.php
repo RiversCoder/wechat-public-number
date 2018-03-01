@@ -4,16 +4,16 @@
 	
 	class  Wechat   
 	{      
-	    public $APPID="wx46exxxxx2018";      
-	    public $APPSECRET="4107c0xxxxxxxxxxxxx8f353e";  
+	    public $APPID="wx46ed101d014f2018";      
+	    public $APPSECRET="4107c079d12cfaaa57b64069408f353e";  
 
 
 	    public function __construct()
 	    {
-	    	$this->createmenu();
+	    	$this->fetchMenu();
 	    }
 
-	    //获取access_token  
+	    //get access_token
 	    public function index()  
 	    {         
 	        $url="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$this->APPID."&secret=".$this->APPSECRET;        
@@ -35,7 +35,7 @@
 		}
 
 
-	    //请求接口方法  
+	    // requst url
 		public function postcurl($url,$data = null)
 		{         
 			$ch = curl_init();  
@@ -52,24 +52,18 @@
 			return  $output=json_decode($output,true);            
 		}  
 
-	    //拼接参数，带着access_token请求创建菜单的接口  
-	    public function createmenu()
+	    // get menu data
+	    public function fetchMenu()
 	    {  
-	          
-	      $data = '{"button":[{"type":"click","name":"今日歌曲","key":"V1001_TODAY_MUSIC"},{"name":"菜单","sub_button":[{"type":"view","name":"搜索","url":"http://www.soso.com/"},{"type":"miniprogram","name":"wxa","url":"http://mp.weixin.qq.com","appid":"wx286b93c14bbf93aa","pagepath":"pages/lunar/index"},{"type":"click","name":"赞一下我们","key":"V1001_GOOD"}]}]}'; 
-
-	      	//echo $data;
-
 			 $access_token=$this->index();  
-		     $url="https://api.weixin.qq.com/cgi-bin/menu/create?access_token=".$access_token;    
-		     $result = $this->postcurl($url,$data);  
-		   print_r ($result);  
+			 //echo $access_token;
+		     $url="https://api.weixin.qq.com/cgi-bin/menu/get?access_token=".$access_token;    
+		     $result = $this->postcurl($url);  
+		     print_r ($result);  
 		}             
 	}   
 
 	 new Wechat();
 
 	 //7_CIONyuPYBSAjV6GdJPhUSoYI70tsXw2xn9q3JqsxVdwqhrmnlX4v31FyPTS1aQfxR7MSz5cT9H_62ghMR9GnGPgB-D260Yve9-vxntk4vpx5ivhrb14OGqkHWSwLQQjAAAHMM
-
-	 
 ?>
