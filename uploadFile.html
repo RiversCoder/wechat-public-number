@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<style type="text/css">
+		.panel{margin-top:20px;}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="panel panel-info">
+		    <div class="panel-heading">
+		        <h3 class="panel-title">
+		            微信公众号 - 上传多媒体文件
+		        </h3>
+		    </div>
+		    <div class="panel-body">
+		        <form role="form" method="post" action="http://www.rgrape.com/othersite/wechat/wechat.php" enctype="multipart/form-data">
+					<div class="form-group">
+						<label for="name">文件类型 [ 图片（image）、语音（voice）、视频（video）和缩略图（thumb） ] </label>
+						<select class="form-control" name="fileType">
+							<option value="image" selected>图片</option>
+							<option value="voice">语音</option>
+							<option value="video">视频</option>
+							<option value="thumb">缩略图</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="inputfile" >文件输入</label>
+						<input type="file" id="inputfile" name='fileGood' />
+						<p class="help-block">请选择对应类型的文件</p>
+					</div>
+					<input type="submit" class="btn btn-default btn-primary" name="uploadBtn" value="提交上传">
+				</form>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

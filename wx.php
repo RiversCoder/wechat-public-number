@@ -4,7 +4,8 @@
 	class WeChat{
 
 		public $APPID = "wx46ed101d014f2018";      
-	    public $APPSECRET = "4107c079d12cfaaa57b64069408f353e"; 
+	    public $APPSECRET = "4107c079d12cfaaa57b64069408f353e";
+	    private $_appkey = '73c59be8dff14916a0d9ff5fb90c31b6'; 
 	    private $_msg_template = array(
 	    
 		    //text
@@ -25,7 +26,55 @@
 		public function __construct()
 		{
 			$this->init();
-			$this->getWxMessages();
+			$this->keepSituation();
+			//$this->getWxMessages();
+			//$this->getFiles();
+		}
+
+		//get all nums
+		private function getFiles()
+		{	
+			$access_token = $this->index();
+			$url='https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token='.$access_token;
+			$result = $this->postcurl($url);
+
+			print_r($result);
+		}
+
+		//init default function
+		private function keepSituation()
+		{	
+			print_r($_POST);
+			print_r($_FILES);
+
+			//判断是否有上传文件
+			if(isset($_POST['uploadBtn']) && !empty($_FILES['fileGood']))
+			{	
+				$filePath = './images/tpicture.jpg';
+				move_uploaded_file($_FILES['fileGood']['tmp_name'],$filePath);
+				$this->uploadFiles($filePath,$_POST['fileType']);
+			}
+		}
+
+		//update file(image/voice/video/thumb) and get media_id
+		private function uploadFiles($filepath,$filetype)
+		{	
+			$access_token = $this->index();
+			$type = $filetype;
+			$file = $filepath;
+			if(class_exists('\CURLFile'))
+			{
+				$data = array('media' => new \CURLFile(realpath($file)) );
+			}
+			else
+			{
+				$data = array( 'media' => '@'.realpath($file) );
+			}
+			
+			$url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token='.$access_token.'&type='.$type;
+			$result = $this->postcurl($url,$data);
+
+			print_r($result);
 		}
 
 		// token setting
@@ -78,6 +127,7 @@
 			return  $output=json_decode($output,true);            
 		}
 		
+		
 
 		// Reply text
 		private function _msgText($xml)
@@ -89,6 +139,22 @@
 			$content = '您好，欢迎来到mo vi的公众号!';
 
             $infoText = sprintf($this->_msg_template['text'],$toUser,$fromUser,$createTime,$content);
+            
+            die($infoText);
+
+		}
+
+		private function _msgAutoText($xml)
+		{
+			
+            $toUser = $xml->FromUserName;
+			$fromUser = $xml->ToUserName;
+			$content = $xml->Content;
+			$createTime = time();
+			$url = 'http://www.tuling123.com/openapi/api?key='.$this->_appkey.'&info='.$content.'&userid='.$toUser;
+			$response_content = $this->postcurl($url);
+			
+            $infoText = sprintf($this->_msg_template['text'],$toUser,$fromUser,$createTime,$response_content['text']);
             
             die($infoText);
 
@@ -182,7 +248,8 @@
 		    	//$this->_msgImg($sxe_2);
 		    	//$this->_msgText($sxe_2);
 		    	//$this->_msgNews($sxe_2);
-		    	$this->_msgGeography($sxe_2);
+		    	//$this->_msgGeography($sxe_2);
+		    	$this->_msgAutoText($sxe_2);
 		    }
 		}      
 	}
